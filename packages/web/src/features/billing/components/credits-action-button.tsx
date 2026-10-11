@@ -7,7 +7,6 @@ import { useEmbedding } from '@/components/providers/embed-provider';
 import { Button } from '@/components/ui/button';
 import { flagsHooks } from '@/hooks/flags-hooks';
 import { AdminControl, adminControl } from '@/lib/admin-control';
-import { cn } from '@/lib/utils';
 
 import { billingQueries } from '../hooks/billing-hooks';
 import { useCreditsUsage } from '../hooks/use-credits-usage';
@@ -18,7 +17,7 @@ import { AutoRechargeConfigDialog } from './feature-usage/auto-recharge-config-d
 
 export function CreditsActionButton({
   className,
-  variant = 'ghost',
+  variant = 'basic',
 }: CreditsActionButtonProps) {
   const { platformId, isPlatformAdmin, isPaid, isBillingEnforced } =
     useCreditsUsage();
@@ -53,10 +52,7 @@ export function CreditsActionButton({
           {...adminControl(AdminControl.BILLING_CREDITS_UPGRADE_OPEN)}
           variant={variant}
           size="sm"
-          className={cn(
-            variant === 'ghost' && 'font-medium text-accent-11',
-            className,
-          )}
+          className={className}
           onClick={openManagePlanDialog}
         >
           <ArrowUpCircle className="size-4" />
@@ -70,10 +66,7 @@ export function CreditsActionButton({
             {...adminControl(AdminControl.BILLING_CREDITS_RECHARGE_OPEN)}
             variant={variant}
             size="sm"
-            className={cn(
-              variant === 'ghost' && 'font-medium text-accent-11',
-              className,
-            )}
+            className={className}
             onClick={() => setAutoRechargeOpen(true)}
           >
             <Coins className="size-4" />
@@ -97,4 +90,4 @@ type CreditsActionButtonProps = {
   variant?: CreditsActionButtonVariant;
 };
 
-type CreditsActionButtonVariant = 'ghost' | 'secondary' | 'default';
+type CreditsActionButtonVariant = 'basic' | 'secondary' | 'default';
