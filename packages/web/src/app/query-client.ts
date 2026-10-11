@@ -2,11 +2,11 @@ import { ApErrorParams, ErrorCode, isNil } from '@activepieces/core-utils';
 import { MutationCache, QueryCache, QueryClient } from '@tanstack/react-query';
 import { StatusCodes } from 'http-status-codes';
 
+import { internalErrorToast } from '@/components/ui/sonner';
 import { useManagePlanDialogStore } from '@/features/billing';
 import { api } from '@/lib/api';
 import { errorReporting } from '@/lib/error-reporting';
 import { mutationFeedback } from '@/lib/mutation-feedback';
-import { queryRetry } from '@/lib/query-retry';
 
 function isHandledSessionExpiry(error: unknown): boolean {
   if (!api.isError(error)) {
@@ -40,12 +40,6 @@ function reportQueryFailure(error: unknown, queryHash: string): void {
 }
 
 export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: queryRetry.shouldRetry,
-      retryDelay: queryRetry.delay,
-    },
-  },
   queryCache: new QueryCache({
     onError: (error, query) => {
       reportQueryFailure(error, query.queryHash);
@@ -59,9 +53,9 @@ export const queryClient = new QueryClient({
       if (api.isApError(err, ErrorCode.QUOTA_EXCEEDED)) {
         const { openDialog } = useManagePlanDialogStore.getState();
         openDialog();
-        return;
+      } else {
+        internalErrorToast();
       }
-      mutationFeedback.error({ error: err });
     },
   }),
 });
