@@ -84,6 +84,7 @@ export function ProvidersTab() {
     useAdminAction<{ providerId: string; displayName: string }>({
       verb: 'update',
       name: t('Chat provider'),
+      messages: { failed: t("Couldn't change the chat provider") },
       run: ({ providerId, displayName }) =>
         aiProviderApi.update(providerId, { displayName, enabledForChat: true }),
       onSuccess: () => refetch(),
@@ -195,7 +196,10 @@ export function ProvidersTab() {
               updateProvider({ providerId: activeConfig.id, request }),
             )
           }
-          onDelete={() => deleteProvider(activeConfig)}
+          onDelete={async () => {
+            await deleteProvider(activeConfig);
+            closeConfig();
+          }}
           onReplaceCredentials={() => openReplaceCredentials(activeConfig)}
           isRechecking={isRechecking}
           onRecheck={() => recheckProvider(activeConfig.id)}
